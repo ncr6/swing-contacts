@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package presentacion;
 
+import entidades.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.*;
@@ -18,8 +14,12 @@ public class FrmAgregarContacto extends javax.swing.JFrame {
     /**
      * Creates new form FrmAgregarContacto
      */
-    public FrmAgregarContacto(boolean darkModeEnabled) {
+    public FrmAgregarContacto(){}
+    
+    public FrmAgregarContacto(ControlTabla ctbl, ListaContactos list) {
         initComponents();
+        this.ctbl = ctbl;
+        this.list = list;
         
         ImageIcon addContactIcon = new ImageIcon("icons/48/add.png");
         ImageIcon lastnameIcon = new ImageIcon("icons/25/lastname.png");
@@ -38,8 +38,6 @@ public class FrmAgregarContacto extends javax.swing.JFrame {
         emailLbl.setIcon(emailIcon);
         saveBtn.setIcon(saveIcon);
         discardBtn.setIcon(discardIcon);
-        
-        this.darkModeEnabled = darkModeEnabled;
     }
 
     /**
@@ -85,6 +83,11 @@ public class FrmAgregarContacto extends javax.swing.JFrame {
 
         saveBtn.setFont(new java.awt.Font("Fira Sans", 0, 12)); // NOI18N
         saveBtn.setText("Guardar");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
 
         discardBtn.setFont(new java.awt.Font("Fira Sans", 0, 12)); // NOI18N
         discardBtn.setText("Descartar");
@@ -159,6 +162,16 @@ public class FrmAgregarContacto extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_discardBtnActionPerformed
 
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        Contacto c = new Contacto(lastnameTxt.getText(), nameTxt.getText(),
+                     phoneTxt.getText(), cellphoneTxt.getText(), emailTxt.getText());
+        list.registrar(c);
+        ctbl.updateModelo(list);
+        if (list.guardar()) {
+            this.dispose();            
+        }
+    }//GEN-LAST:event_saveBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -177,11 +190,18 @@ public class FrmAgregarContacto extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmAgregarContacto(false).setVisible(true);
+                new FrmAgregarContacto().setVisible(true);
             }
         });
     }
 
+    public void updateTable() {
+        
+    }
+    
+    private ControlTabla ctbl;
+    private ListaContactos list;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cellphoneLbl;
     private javax.swing.JTextField cellphoneTxt;
@@ -197,14 +217,5 @@ public class FrmAgregarContacto extends javax.swing.JFrame {
     private javax.swing.JButton saveBtn;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
-    
-    private boolean darkModeEnabled;
 
-    public boolean isDarkModeEnabled() {
-        return darkModeEnabled;
-    }
-
-    public void setDarkModeEnabled(boolean darkModeEnabled) {
-        this.darkModeEnabled = darkModeEnabled;
-    }
 }

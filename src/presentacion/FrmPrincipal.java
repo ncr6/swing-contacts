@@ -1,15 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package presentacion;
 
+import entidades.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 /**
  *
  * @author deerfox@debian
@@ -29,14 +28,31 @@ public class FrmPrincipal extends javax.swing.JFrame {
         removeBtn.setIcon(removeIcon);
         themeBtn.setIcon(darkmodeIcon);
         
-        DefaultTableModel contactsTableModel = new DefaultTableModel();
-        contactsTable.setModel(contactsTableModel);
+        list = new ListaContactos();
         
-        contactsTableModel.addColumn("Apellido");
-        contactsTableModel.addColumn("Nombre");
-        contactsTableModel.addColumn("Teléfono Fijo");
-        contactsTableModel.addColumn("Celular");
-        contactsTableModel.addColumn("E-mail");
+        ctbl = new ControlTabla(list);
+        
+        contactsTable.setModel(ctbl.getModelo());
+        
+        ctbl.getModelo().addColumn("Apellido");
+        ctbl.getModelo().addColumn("Nombre");
+        ctbl.getModelo().addColumn("Teléfono Fijo");
+        ctbl.getModelo().addColumn("Celular");
+        ctbl.getModelo().addColumn("E-mail");
+        
+        contactsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        contactsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting() && contactsTable.getSelectedRow() != -1) {
+                    editBtn.setEnabled(true);
+                    removeBtn.setEnabled(true);
+                }
+            }
+        });
+        
+        ctbl.updateModelo(list);
     }
 
     /**
@@ -60,6 +76,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Agenda Electrónica");
+        setPreferredSize(new java.awt.Dimension(850, 500));
         setResizable(false);
 
         titleLbl.setFont(new java.awt.Font("Fira Sans", 1, 24)); // NOI18N
@@ -76,6 +93,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        contactsTable.setMaximumSize(new java.awt.Dimension(200000, 200000));
         contactsScrollPanel.setViewportView(contactsTable);
 
         searchTxt.setToolTipText("Buscar por Apellido...");
@@ -91,6 +109,20 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
 
+        editBtn.setEnabled(false);
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
+
+        removeBtn.setEnabled(false);
+        removeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeBtnActionPerformed(evt);
+            }
+        });
+
         themeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 themeBtnActionPerformed(evt);
@@ -102,25 +134,26 @@ public class FrmPrincipal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(themeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(searchIconLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchIconLbl)
+                        .addGap(24, 24, 24)
                         .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(themeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(contactsScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(26, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(contactsScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,17 +161,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchIconLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                    .addComponent(searchIconLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
+                .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                         .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                         .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
-                    .addComponent(themeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(themeBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12))
         );
 
@@ -146,6 +179,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    public static boolean confirmar(String pregunta){
+        boolean confirmado = false;
+        int resultado = JOptionPane.showConfirmDialog(null, pregunta, "Confirmación", JOptionPane.YES_NO_OPTION);
+        if (resultado == JOptionPane.YES_OPTION){
+            confirmado = true;
+        } else if (resultado == JOptionPane.NO_OPTION){
+            confirmado = false;
+        }
+        return confirmado;
+    }    
+    
     private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchTxtActionPerformed
@@ -171,9 +215,34 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_themeBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        new FrmAgregarContacto(this.isDarkModeEnabled()).setVisible(true);
+        new FrmAgregarContacto(ctbl, list).setVisible(true);
     }//GEN-LAST:event_addBtnActionPerformed
 
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        int selection = contactsTable.getSelectedRow();
+        if (selection != -1) {
+            new FrmEditarContacto(ctbl, list, list.getLista().get(selection)).setVisible(true);
+        } else {
+            editBtn.setEnabled(false);
+        }
+    }//GEN-LAST:event_editBtnActionPerformed
+
+    private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
+        int selection = contactsTable.getSelectedRow();
+        if (selection != -1) {
+            Contacto c = list.getLista().get(selection);
+            if (confirmar("¿Desea eliminar al contacto " +
+                c.getNombre() + " " + c.getApellido() + "?")) {
+                list.getLista().remove(selection);
+                list.guardar();
+                ctbl.updateModelo(list);
+            }
+        } else {
+            editBtn.setEnabled(false);
+        }
+    }//GEN-LAST:event_removeBtnActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -209,7 +278,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton themeBtn;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
-    
+
     //ImageIcons
     private ImageIcon contactsIcon = new ImageIcon("icons/48/contacts.png");
     private ImageIcon searchIcon = new ImageIcon("icons/36/search_glass.png");
@@ -219,9 +288,28 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private ImageIcon darkmodeIcon = new ImageIcon("icons/36/darkmode.png");
     private ImageIcon lightmodeIcon = new ImageIcon("icons/36/lightmode.png");
     
+    private ListaContactos list;
+    private ControlTabla ctbl;
+
+    public ControlTabla getCtbl() {
+        return ctbl;
+    }
+
+    public void setCtbl(ControlTabla ctbl) {
+        this.ctbl = ctbl;
+    }
+    
     private boolean darkModeEnabled = false;
     
     public boolean isDarkModeEnabled(){
         return darkModeEnabled;
+    }
+    
+    public ListaContactos getList() {
+        return list;
+    }
+
+    public void setList(ListaContactos list) {
+        this.list = list;
     }
 }

@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package presentacion;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
+import entidades.*;
+import java.util.Collections;
 import javax.swing.*;
 
 /**
@@ -18,8 +14,13 @@ public class FrmEditarContacto extends javax.swing.JFrame {
     /**
      * Creates new form FrmEditarContacto
      */
-    public FrmEditarContacto(boolean darkModeEnabled) {
+    public FrmEditarContacto(){}
+    
+    public FrmEditarContacto(ControlTabla ctbl, ListaContactos list, Contacto c) {
         initComponents();
+        this.ctbl = ctbl;
+        this.list = list;
+        this.c = c;
         
         ImageIcon editContactIcon = new ImageIcon("icons/48/edit.png");
         ImageIcon lastnameIcon = new ImageIcon("icons/25/lastname.png");
@@ -39,7 +40,12 @@ public class FrmEditarContacto extends javax.swing.JFrame {
         saveBtn.setIcon(saveIcon);
         discardBtn.setIcon(discardIcon);
         
-        this.darkModeEnabled = darkModeEnabled;
+        lastnameTxt.setText(c.getApellido());
+        nameTxt.setText(c.getNombre());
+        phoneTxt.setText(c.getFijo());
+        cellphoneTxt.setText(c.getCelular());
+        emailTxt.setText(c.getCorreo());
+        
     }
 
     /**
@@ -90,6 +96,11 @@ public class FrmEditarContacto extends javax.swing.JFrame {
 
         saveBtn.setFont(new java.awt.Font("Fira Sans", 0, 12)); // NOI18N
         saveBtn.setText("Guardar");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
 
         discardBtn.setFont(new java.awt.Font("Fira Sans", 0, 12)); // NOI18N
         discardBtn.setText("Descartar");
@@ -164,6 +175,18 @@ public class FrmEditarContacto extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_discardBtnActionPerformed
 
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        c.setApellido(lastnameTxt.getText()); c.setNombre(nameTxt.getText());
+        c.setFijo(phoneTxt.getText()); c.setCelular(cellphoneTxt.getText());
+        c.setCorreo(emailTxt.getText());
+        if (list.guardar()) {
+            ctbl.updateModelo(list);
+            this.dispose();            
+        } else {
+            JOptionPane.showMessageDialog(null, "No pudimos editar este contacto", "Error", 2);
+        }
+    }//GEN-LAST:event_saveBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -182,10 +205,13 @@ public class FrmEditarContacto extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmEditarContacto(false).setVisible(true);
+                new FrmEditarContacto().setVisible(true);
             }
         });
 }
+    private ControlTabla ctbl;
+    private ListaContactos list;
+    private Contacto c;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cellphoneLbl;
@@ -203,13 +229,4 @@ public class FrmEditarContacto extends javax.swing.JFrame {
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
     
-    private boolean darkModeEnabled;
-
-    public boolean isDarkModeEnabled() {
-        return darkModeEnabled;
-    }
-
-    public void setDarkModeEnabled(boolean darkModeEnabled) {
-        this.darkModeEnabled = darkModeEnabled;
-    }
 }
