@@ -76,27 +76,4 @@ public class ListaContactos implements Serializable {
             }
         }     
     }
-    
-    public ArrayList<Contacto> leerArr() {
-        File f = new File(filename);
-        ArrayList miLista = new ArrayList();
-        if (f.exists()){
-            try {     
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("contactos.data"));         
-                miLista = (ArrayList<Contacto>)ois.readObject();
-                ois.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                f.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return miLista;
-    }
 }

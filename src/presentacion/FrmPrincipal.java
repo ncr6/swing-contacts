@@ -3,12 +3,16 @@ package presentacion;
 import entidades.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 /**
  *
  * @author deerfox@debian
@@ -76,7 +80,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Agenda Electrónica");
-        setPreferredSize(new java.awt.Dimension(850, 500));
         setResizable(false);
 
         titleLbl.setFont(new java.awt.Font("Fira Sans", 1, 24)); // NOI18N
@@ -93,13 +96,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        contactsTable.setMaximumSize(new java.awt.Dimension(200000, 200000));
         contactsScrollPanel.setViewportView(contactsTable);
 
         searchTxt.setToolTipText("Buscar por Apellido...");
         searchTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchTxtActionPerformed(evt);
+            }
+        });
+        searchTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                searchTxtKeyTyped(evt);
             }
         });
 
@@ -147,8 +154,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(searchIconLbl)
-                        .addGap(24, 24, 24)
+                        .addComponent(searchIconLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -164,7 +171,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     .addComponent(searchIconLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -242,6 +249,21 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
+    private void searchTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTxtKeyTyped
+        /*
+            Solución implementada gracias a la valiosa ayuda
+            de mi compañero Jonathan Mostacero
+        */
+        trs = new TableRowSorter(ctbl.getModelo());
+        searchTxt.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                trs.setRowFilter(RowFilter.regexFilter(searchTxt.getText(), 0));
+            }
+        });
+        contactsTable.setRowSorter(trs);
+    }//GEN-LAST:event_searchTxtKeyTyped
+
     
     /**
      * @param args the command line arguments
@@ -290,6 +312,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     
     private ListaContactos list;
     private ControlTabla ctbl;
+    private TableRowSorter trs;
 
     public ControlTabla getCtbl() {
         return ctbl;
