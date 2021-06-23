@@ -8,6 +8,7 @@ import javax.swing.*;
  *
  * @author deerfox@debian
  */
+
 public class FrmAgregarContacto extends javax.swing.JFrame {
 
     /**

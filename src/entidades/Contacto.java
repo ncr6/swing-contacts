@@ -70,4 +70,11 @@ public class Contacto implements Serializable, Comparable<Contacto> {
     public int compareTo(Contacto otroContacto) {
         return this.getApellido().compareTo(otroContacto.getApellido());
     }
+    
+    @Override
+    public String toString(){
+        return "Nombre: " + getNombre() + "\nApellido: " + getApellido() +
+               "\nTeléfono: " + getFijo() + "\nCelular: " + getCelular() +
+               "\nE-mail: " + getCorreo();
+    }
 }

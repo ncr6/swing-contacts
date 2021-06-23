@@ -2,13 +2,13 @@ package presentacion;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import entidades.*;
-import java.util.Collections;
 import javax.swing.*;
 
 /**
  *
  * @author deerfox@debian
  */
+
 public class FrmEditarContacto extends javax.swing.JFrame {
 
     /**

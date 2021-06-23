@@ -1,9 +1,12 @@
 package entidades;
+
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author deerfox@debian
  */
+
 public class ControlTabla {
 
     private DefaultTableModel modelo;

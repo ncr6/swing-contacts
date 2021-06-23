@@ -3,14 +3,16 @@ package entidades;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.io.*;
+
 /**
  *
  * @author deerfox@debian
  */
+
 public class ListaContactos implements Serializable {
 
     private ArrayList<Contacto> lista;
-    public static final String filename = "contactos.data";
+    public static final String fileName = "contactos.data";
     
     public ListaContactos() {
         if (!leer()){
@@ -52,7 +54,7 @@ public class ListaContactos implements Serializable {
     }
     
     private boolean leer() {
-        File f = new File(filename);
+        File f = new File(fileName);
         if (f.exists()){
             try {     
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream("contactos.data"));         
@@ -69,11 +71,10 @@ public class ListaContactos implements Serializable {
         } else {
             try {
                 f.createNewFile();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                return false;
             }
+            return false;
         }     
     }
 }

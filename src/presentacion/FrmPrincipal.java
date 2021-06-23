@@ -5,6 +5,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -13,10 +14,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
+
 /**
  *
  * @author deerfox@debian
  */
+
 public class FrmPrincipal extends javax.swing.JFrame {
 
     /**
@@ -173,12 +176,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                         .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                         .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
-                    .addComponent(themeBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(themeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
 
@@ -228,24 +231,26 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         int selection = contactsTable.getSelectedRow();
         if (selection != -1) {
-            new FrmEditarContacto(ctbl, list, list.getLista().get(selection)).setVisible(true);
+            int modelIndex = contactsTable.convertRowIndexToModel(selection);
+            new FrmEditarContacto(ctbl, list, list.getLista().get(modelIndex)).setVisible(true);
         } else {
-            editBtn.setEnabled(false);
+            editBtn.setEnabled(false); removeBtn.setEnabled(false);
         }
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
         int selection = contactsTable.getSelectedRow();
         if (selection != -1) {
-            Contacto c = list.getLista().get(selection);
+            int modelIndex = contactsTable.convertRowIndexToModel(selection);
+            Contacto c = list.getLista().get(modelIndex);
             if (confirmar("¿Desea eliminar al contacto " +
                 c.getNombre() + " " + c.getApellido() + "?")) {
-                list.getLista().remove(selection);
+                list.getLista().remove(modelIndex);
                 list.guardar();
                 ctbl.updateModelo(list);
             }
         } else {
-            editBtn.setEnabled(false);
+            editBtn.setEnabled(false); removeBtn.setEnabled(false);
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
@@ -258,7 +263,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
         searchTxt.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                trs.setRowFilter(RowFilter.regexFilter(searchTxt.getText(), 0));
+                try {
+                    trs.setRowFilter(RowFilter.regexFilter(searchTxt.getText(), 0));
+                } catch (PatternSyntaxException err) {
+                    JOptionPane.showMessageDialog(null,
+                    "Término de búsqueda inválido.\nInténtelo nuevamente.",
+                    "Búsqueda inválida", 2);
+                    searchTxt.setText(null);
+                }
             }
         });
         contactsTable.setRowSorter(trs);
@@ -302,13 +314,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     //ImageIcons
-    private ImageIcon contactsIcon = new ImageIcon("icons/48/contacts.png");
-    private ImageIcon searchIcon = new ImageIcon("icons/36/search_glass.png");
-    private ImageIcon addIcon = new ImageIcon("icons/36/add.png");
-    private ImageIcon editIcon = new ImageIcon("icons/36/edit.png");
-    private ImageIcon removeIcon = new ImageIcon("icons/36/remove.png"); 
-    private ImageIcon darkmodeIcon = new ImageIcon("icons/36/darkmode.png");
-    private ImageIcon lightmodeIcon = new ImageIcon("icons/36/lightmode.png");
+    private final ImageIcon contactsIcon = new ImageIcon("icons/48/contacts.png");
+    private final ImageIcon searchIcon = new ImageIcon("icons/36/search_glass.png");
+    private final ImageIcon addIcon = new ImageIcon("icons/36/add.png");
+    private final ImageIcon editIcon = new ImageIcon("icons/36/edit.png");
+    private final ImageIcon removeIcon = new ImageIcon("icons/36/remove.png"); 
+    private final ImageIcon darkmodeIcon = new ImageIcon("icons/36/darkmode.png");
+    private final ImageIcon lightmodeIcon = new ImageIcon("icons/36/lightmode.png");
     
     private ListaContactos list;
     private ControlTabla ctbl;

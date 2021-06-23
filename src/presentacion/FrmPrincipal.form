@@ -65,13 +65,13 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="contactsScrollPanel" pref="316" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="addBtn" pref="42" max="32767" attributes="0"/>
                       <Component id="editBtn" pref="42" max="32767" attributes="0"/>
                       <Component id="removeBtn" alignment="0" pref="42" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="themeBtn" alignment="1" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="themeBtn" alignment="0" pref="42" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
           </Group>
