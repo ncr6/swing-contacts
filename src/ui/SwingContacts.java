@@ -7,7 +7,12 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
@@ -16,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableRowSorter;
@@ -39,10 +45,18 @@ public class SwingContacts extends javax.swing.JFrame {
         }
 
         initComponents();
+        
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("config.swcontacts"));
+            darkModeEnabled = ois.readBoolean();
+            themeBtn.setIcon(darkModeEnabled ? lightmodeIcon : darkmodeIcon);
+            ois.close();
+        } catch (IOException ex) {
+            System.out.println("Excepcion de E/S en la configuracion: " + ex);
+        }
 
         javax.swing.UIManager.put("OptionPane.messageFont", new FontUIResource(fElement1));
-                
-        themeBtn.setIcon(darkmodeIcon);
+        
 
         list = new ListaContactos();
         ctbl = new ControlTabla(list);
@@ -223,21 +237,31 @@ public class SwingContacts extends javax.swing.JFrame {
 
     private void themeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themeBtnActionPerformed
         try {
-            if (!darkModeEnabled) {
-                javax.swing.UIManager.setLookAndFeel(new FlatDarkLaf());
-                SwingUtilities.updateComponentTreeUI(this);
-                this.pack();
-                darkModeEnabled = true;
-                themeBtn.setIcon(lightmodeIcon);
-            } else {
-                javax.swing.UIManager.setLookAndFeel(new FlatLightLaf());
-                SwingUtilities.updateComponentTreeUI(this);
-                this.pack();
-                darkModeEnabled = false;
-                themeBtn.setIcon(darkmodeIcon);
+            FileOutputStream fos = new FileOutputStream("config.swcontacts");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            try {
+                if (!darkModeEnabled) {
+                    javax.swing.UIManager.setLookAndFeel(new FlatDarkLaf());
+                    SwingUtilities.updateComponentTreeUI(this);
+                    this.pack();
+                    darkModeEnabled = true;
+                    themeBtn.setIcon(lightmodeIcon);
+                } else {
+                    javax.swing.UIManager.setLookAndFeel(new FlatLightLaf());
+                    SwingUtilities.updateComponentTreeUI(this);
+                    this.pack();
+                    darkModeEnabled = false;
+                    themeBtn.setIcon(darkmodeIcon);
+                }
+            } catch (UnsupportedLookAndFeelException ex) {
+                System.out.println(ex);
+            } finally {
+                oos.writeBoolean(darkModeEnabled);
+                oos.flush();
+                oos.close();
             }
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (IOException ex) {
+            System.out.println("Error de E/S en la configuración del tema");
         }
     }//GEN-LAST:event_themeBtnActionPerformed
 
@@ -304,10 +328,22 @@ public class SwingContacts extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            javax.swing.UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (Exception ex) {
-            System.out.println(ex);
+        File f = new File("config.swcontacts");
+        if (f.exists()) {
+            try {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("config.swcontacts"));
+                boolean darkMode = ois.readBoolean();
+                javax.swing.UIManager.setLookAndFeel(darkMode ? new FlatDarkLaf() : new FlatLightLaf());
+            } catch (IOException | UnsupportedLookAndFeelException ex) {
+                System.out.println("Excepcion de E/S en el archivo de config: " + ex);
+            }
+        } else {
+            try {
+                f.createNewFile();
+                javax.swing.UIManager.setLookAndFeel(new FlatLightLaf());
+            } catch (IOException | UnsupportedLookAndFeelException ex) {
+                ex.printStackTrace();
+            }
         }
         //</editor-fold>
 
