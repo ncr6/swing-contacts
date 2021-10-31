@@ -6,7 +6,6 @@ import java.io.Serializable;
  *
  * @author deerfox@debian
  */
-
 public class Contacto implements Serializable, Comparable<Contacto> {
 
     private String apellido;
@@ -14,11 +13,12 @@ public class Contacto implements Serializable, Comparable<Contacto> {
     private String fijo;
     private String celular;
     private String correo;
-    
-    public Contacto(){}
-    
+
+    public Contacto() {
+    }
+
     public Contacto(String apellido, String nombre, String fijo,
-                    String celular, String correo) {
+            String celular, String correo) {
         this.apellido = apellido;
         this.nombre = nombre;
         this.fijo = fijo;
@@ -65,16 +65,16 @@ public class Contacto implements Serializable, Comparable<Contacto> {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
+
     @Override
     public int compareTo(Contacto otroContacto) {
         return this.getApellido().compareTo(otroContacto.getApellido());
     }
-    
+
     @Override
-    public String toString(){
-        return "Nombre: " + getNombre() + "\nApellido: " + getApellido() +
-               "\nTeléfono: " + getFijo() + "\nCelular: " + getCelular() +
-               "\nE-mail: " + getCorreo();
+    public String toString() {
+        return "Nombre: " + getNombre() + "\nApellido: " + getApellido()
+                + "\nTeléfono: " + getFijo() + "\nCelular: " + getCelular()
+                + "\nE-mail: " + getCorreo();
     }
 }

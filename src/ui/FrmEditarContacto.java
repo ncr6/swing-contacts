@@ -1,8 +1,13 @@
-package presentacion;
+package ui;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import entidades.*;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 
 /**
  *
@@ -17,19 +22,31 @@ public class FrmEditarContacto extends javax.swing.JFrame {
     public FrmEditarContacto(){}
     
     public FrmEditarContacto(ControlTabla ctbl, ListaContactos list, Contacto c) {
+        try {
+            this.fTitle = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Bold.ttf")).deriveFont(22f);
+            this.fElement1 = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Regular.ttf")).deriveFont(14f);
+            this.fElementM = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Medium.ttf")).deriveFont(15f);
+            this.fElementB = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Bold.ttf")).deriveFont(16f);
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(SwingContacts.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         initComponents();
+
+        javax.swing.UIManager.put("OptionPane.messageFont", new FontUIResource(fElement1));
+        
         this.ctbl = ctbl;
         this.list = list;
         this.c = c;
         
-        ImageIcon editContactIcon = new ImageIcon("icons/48/edit.png");
-        ImageIcon lastnameIcon = new ImageIcon("icons/25/lastname.png");
-        ImageIcon nameIcon = new ImageIcon("icons/25/name.png");
-        ImageIcon phoneIcon = new ImageIcon("icons/25/phone.png");
-        ImageIcon cellphoneIcon = new ImageIcon("icons/25/cellphone.png");
-        ImageIcon emailIcon = new ImageIcon("icons/25/email.png");
-        ImageIcon saveIcon = new ImageIcon("icons/25/check.png");
-        ImageIcon discardIcon = new ImageIcon("icons/25/close.png");
+        ImageIcon editContactIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/edit.png"));
+        ImageIcon lastnameIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/lastname.png"));
+        ImageIcon nameIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/name.png"));
+        ImageIcon phoneIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/phone.png"));
+        ImageIcon cellphoneIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/cellphone.png"));
+        ImageIcon emailIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/email.png"));
+        ImageIcon saveIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/check.png"));
+        ImageIcon discardIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/close.png"));
         
         titleLbl.setIcon(editContactIcon);
         lastnameLbl.setIcon(lastnameIcon);
@@ -76,25 +93,47 @@ public class FrmEditarContacto extends javax.swing.JFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
 
-        titleLbl.setFont(new java.awt.Font("Fira Sans", 1, 24)); // NOI18N
+        titleLbl.setFont(fTitle);
+        titleLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/edit_48.png"))); // NOI18N
         titleLbl.setText(" Editar Contacto");
 
+        lastnameTxt.setFont(fElement1);
+
+        lastnameLbl.setFont(fElementM);
+        lastnameLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/lastname.png"))); // NOI18N
         lastnameLbl.setLabelFor(lastnameTxt);
         lastnameLbl.setText("Apellido:");
 
+        nameLbl.setFont(fElementM);
+        nameLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/name.png"))); // NOI18N
         nameLbl.setLabelFor(nameTxt);
         nameLbl.setText("Nombre:");
 
+        nameTxt.setFont(fElement1);
+
+        phoneLbl.setFont(fElementM);
+        phoneLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/phone.png"))); // NOI18N
         phoneLbl.setLabelFor(phoneTxt);
         phoneLbl.setText("Teléfono Fijo:");
 
+        phoneTxt.setFont(fElement1);
+
+        cellphoneLbl.setFont(fElementM);
+        cellphoneLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/cellphone.png"))); // NOI18N
         cellphoneLbl.setLabelFor(cellphoneTxt);
         cellphoneLbl.setText("Celular:");
 
+        cellphoneTxt.setFont(fElement1);
+
+        emailLbl.setFont(fElementM);
+        emailLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/email.png"))); // NOI18N
         emailLbl.setLabelFor(emailTxt);
         emailLbl.setText("Correo electrónico:");
 
-        saveBtn.setFont(new java.awt.Font("Fira Sans", 0, 12)); // NOI18N
+        emailTxt.setFont(fElement1);
+
+        saveBtn.setFont(fElementB);
+        saveBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/check.png"))); // NOI18N
         saveBtn.setText("Guardar");
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +141,8 @@ public class FrmEditarContacto extends javax.swing.JFrame {
             }
         });
 
-        discardBtn.setFont(new java.awt.Font("Fira Sans", 0, 12)); // NOI18N
+        discardBtn.setFont(fElementB);
+        discardBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/close.png"))); // NOI18N
         discardBtn.setText("Descartar");
         discardBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -116,55 +156,54 @@ public class FrmEditarContacto extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(emailLbl)
                     .addComponent(cellphoneLbl)
                     .addComponent(phoneLbl)
                     .addComponent(nameLbl)
                     .addComponent(lastnameLbl)
-                    .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                            .addGap(18, 18, 18)
-                            .addComponent(discardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(emailTxt, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(cellphoneTxt, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(phoneTxt, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(nameTxt, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lastnameTxt, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(emailTxt)
+                    .addComponent(cellphoneTxt)
+                    .addComponent(phoneTxt)
+                    .addComponent(nameTxt)
+                    .addComponent(lastnameTxt)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(discardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(18, 18, 18)
                 .addComponent(lastnameLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lastnameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lastnameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(nameLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(phoneLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phoneTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(phoneTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cellphoneLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cellphoneTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cellphoneTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(emailLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(discardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(discardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -190,25 +229,7 @@ public class FrmEditarContacto extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the FlatLaf Light look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            javax.swing.UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmEditarContacto().setVisible(true);
-            }
-        });
-}
+
     private ControlTabla ctbl;
     private ListaContactos list;
     private Contacto c;
@@ -229,4 +250,9 @@ public class FrmEditarContacto extends javax.swing.JFrame {
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
     
+    // Fonts
+    private Font fTitle;
+    private Font fElement1;
+    private Font fElementM;
+    private Font fElementB;
 }

@@ -12,7 +12,7 @@ import java.io.*;
 public class ListaContactos implements Serializable {
 
     private ArrayList<Contacto> lista;
-    public static final String fileName = "contactos.data";
+    public static final String fileName = "data.swcontacts";
     
     public ListaContactos() {
         if (!leer()){
@@ -41,7 +41,7 @@ public class ListaContactos implements Serializable {
     public boolean guardar() {
         try {
             Collections.sort(lista);        
-            FileOutputStream fos = new FileOutputStream("contactos.data");
+            FileOutputStream fos = new FileOutputStream("data.swcontacts");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(lista);
             oos.flush();
@@ -57,7 +57,7 @@ public class ListaContactos implements Serializable {
         File f = new File(fileName);
         if (f.exists()){
             try {     
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("contactos.data"));         
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data.swcontacts"));         
                 lista = (ArrayList<Contacto>)ois.readObject();
                 ois.close();
                 return true;

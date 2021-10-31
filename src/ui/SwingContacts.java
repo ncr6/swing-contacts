@@ -1,10 +1,15 @@
-package presentacion;
+package ui;
 
 import entidades.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -12,53 +17,54 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author deerfox@debian
  */
-
-public class FrmPrincipal extends javax.swing.JFrame {
+public class SwingContacts extends javax.swing.JFrame {
 
     /**
      * Creates new form FrmPrincipal
      */
-    public FrmPrincipal() {
+    public SwingContacts() {
+        try {
+            this.fTitle = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Bold.ttf")).deriveFont(22f);
+            this.fElement1 = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Regular.ttf")).deriveFont(14f);
+            this.fElementB = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/fonts/MerriweatherSans-Bold.ttf")).deriveFont(16f);
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(SwingContacts.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         initComponents();
-        
-        titleLbl.setIcon(contactsIcon);
-        searchIconLbl.setIcon(searchIcon);
-        addBtn.setIcon(addIcon);
-        editBtn.setIcon(editIcon);
-        removeBtn.setIcon(removeIcon);
+
+        javax.swing.UIManager.put("OptionPane.messageFont", new FontUIResource(fElement1));
+                
         themeBtn.setIcon(darkmodeIcon);
-        
+
         list = new ListaContactos();
-        
         ctbl = new ControlTabla(list);
         
+        contactsTable.getTableHeader().setFont(fElementB);
         contactsTable.setModel(ctbl.getModelo());
-        
+
         ctbl.getModelo().addColumn("Apellido");
         ctbl.getModelo().addColumn("Nombre");
         ctbl.getModelo().addColumn("Teléfono Fijo");
         ctbl.getModelo().addColumn("Celular");
         ctbl.getModelo().addColumn("E-mail");
-        
+
         contactsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        contactsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            @Override
-            public void valueChanged(ListSelectionEvent lse) {
-                if (!lse.getValueIsAdjusting() && contactsTable.getSelectedRow() != -1) {
-                    editBtn.setEnabled(true);
-                    removeBtn.setEnabled(true);
-                }
+
+        contactsTable.getSelectionModel().addListSelectionListener((ListSelectionEvent lse) -> {
+            if (!lse.getValueIsAdjusting() && contactsTable.getSelectedRow() != -1) {
+                editBtn.setEnabled(true);
+                removeBtn.setEnabled(true);
             }
         });
-        
+
         ctbl.updateModelo(list);
     }
 
@@ -82,12 +88,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
         themeBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Agenda Electrónica");
+        setTitle("Swing Contacts");
+        setFont(fElement1);
+        setIconImage(new ImageIcon(getClass().getResource("/iconos/contacts.png")).getImage());
+        setName("SwingContacts"); // NOI18N
         setResizable(false);
 
-        titleLbl.setFont(new java.awt.Font("Fira Sans", 1, 24)); // NOI18N
+        titleLbl.setFont(fTitle);
+        titleLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/contacts.png"))); // NOI18N
         titleLbl.setText("Contactos");
 
+        contactsTable.setFont(fElement1);
         contactsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -101,6 +112,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         ));
         contactsScrollPanel.setViewportView(contactsTable);
 
+        searchTxt.setFont(fElement1);
         searchTxt.setToolTipText("Buscar por Apellido...");
         searchTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -113,12 +125,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
 
+        searchIconLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/search_glass.png"))); // NOI18N
+        searchIconLbl.setLabelFor(searchTxt);
+
+        addBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/add.png"))); // NOI18N
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addBtnActionPerformed(evt);
             }
         });
 
+        editBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/edit.png"))); // NOI18N
         editBtn.setEnabled(false);
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,6 +143,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
 
+        removeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/remove.png"))); // NOI18N
         removeBtn.setEnabled(false);
         removeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,9 +161,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(contactsScrollPanel)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -154,16 +173,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
                         .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(themeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 445, Short.MAX_VALUE)
                         .addComponent(searchIconLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(contactsScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 25, Short.MAX_VALUE))
+                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,39 +190,40 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     .addComponent(searchIconLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                .addComponent(contactsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                        .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                        .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
-                    .addComponent(themeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
+                    .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(themeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
+
+        getAccessibleContext().setAccessibleName("Swing Contacts");
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static boolean confirmar(String pregunta){
+    public static boolean confirmar(String pregunta) {
         boolean confirmado = false;
         int resultado = JOptionPane.showConfirmDialog(null, pregunta, "Confirmación", JOptionPane.YES_NO_OPTION);
-        if (resultado == JOptionPane.YES_OPTION){
+        if (resultado == JOptionPane.YES_OPTION) {
             confirmado = true;
-        } else if (resultado == JOptionPane.NO_OPTION){
+        } else if (resultado == JOptionPane.NO_OPTION) {
             confirmado = false;
         }
         return confirmado;
-    }    
-    
+    }
+
     private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchTxtActionPerformed
 
     private void themeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themeBtnActionPerformed
         try {
-            if (!darkModeEnabled){
+            if (!darkModeEnabled) {
                 javax.swing.UIManager.setLookAndFeel(new FlatDarkLaf());
                 SwingUtilities.updateComponentTreeUI(this);
                 this.pack();
@@ -217,7 +234,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 SwingUtilities.updateComponentTreeUI(this);
                 this.pack();
                 darkModeEnabled = false;
-                themeBtn.setIcon(darkmodeIcon);                
+                themeBtn.setIcon(darkmodeIcon);
             }
         } catch (Exception ex) {
             System.out.println(ex);
@@ -234,7 +251,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
             int modelIndex = contactsTable.convertRowIndexToModel(selection);
             new FrmEditarContacto(ctbl, list, list.getLista().get(modelIndex)).setVisible(true);
         } else {
-            editBtn.setEnabled(false); removeBtn.setEnabled(false);
+            editBtn.setEnabled(false);
+            removeBtn.setEnabled(false);
         }
     }//GEN-LAST:event_editBtnActionPerformed
 
@@ -243,14 +261,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
         if (selection != -1) {
             int modelIndex = contactsTable.convertRowIndexToModel(selection);
             Contacto c = list.getLista().get(modelIndex);
-            if (confirmar("¿Desea eliminar al contacto " +
-                c.getNombre() + " " + c.getApellido() + "?")) {
+            if (confirmar("¿Desea eliminar al contacto "
+                    + c.getNombre() + " " + c.getApellido() + "?")) {
                 list.getLista().remove(modelIndex);
                 list.guardar();
                 ctbl.updateModelo(list);
             }
         } else {
-            editBtn.setEnabled(false); removeBtn.setEnabled(false);
+            editBtn.setEnabled(false);
+            removeBtn.setEnabled(false);
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
@@ -258,7 +277,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         /*
             Solución implementada gracias a la valiosa ayuda
             de mi compañero Jonathan Mostacero
-        */
+         */
         trs = new TableRowSorter(ctbl.getModelo());
         searchTxt.addKeyListener(new KeyAdapter() {
             @Override
@@ -267,8 +286,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     trs.setRowFilter(RowFilter.regexFilter(searchTxt.getText(), 0));
                 } catch (PatternSyntaxException err) {
                     JOptionPane.showMessageDialog(null,
-                    "Término de búsqueda inválido.\nInténtelo nuevamente.",
-                    "Búsqueda inválida", 2);
+                            "Término de búsqueda inválido.\nInténtelo nuevamente.",
+                            "Búsqueda inválida", 2);
                     searchTxt.setText(null);
                 }
             }
@@ -276,7 +295,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
         contactsTable.setRowSorter(trs);
     }//GEN-LAST:event_searchTxtKeyTyped
 
-    
     /**
      * @param args the command line arguments
      */
@@ -296,11 +314,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmPrincipal().setVisible(true);
+                new SwingContacts().setVisible(true);
             }
         });
     }
-        
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JScrollPane contactsScrollPanel;
@@ -312,16 +330,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton themeBtn;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
+    
+    // Fonts
+    public Font fTitle;
+    public Font fElement1;
+    public Font fElementB;
 
     //ImageIcons
-    private final ImageIcon contactsIcon = new ImageIcon("icons/48/contacts.png");
-    private final ImageIcon searchIcon = new ImageIcon("icons/36/search_glass.png");
-    private final ImageIcon addIcon = new ImageIcon("icons/36/add.png");
-    private final ImageIcon editIcon = new ImageIcon("icons/36/edit.png");
-    private final ImageIcon removeIcon = new ImageIcon("icons/36/remove.png"); 
-    private final ImageIcon darkmodeIcon = new ImageIcon("icons/36/darkmode.png");
-    private final ImageIcon lightmodeIcon = new ImageIcon("icons/36/lightmode.png");
-    
+    private final ImageIcon darkmodeIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/darkmode.png"));
+    private final ImageIcon lightmodeIcon = new javax.swing.ImageIcon(getClass().getResource("/iconos/lightmode.png"));
+
     private ListaContactos list;
     private ControlTabla ctbl;
     private TableRowSorter trs;
@@ -333,13 +351,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
     public void setCtbl(ControlTabla ctbl) {
         this.ctbl = ctbl;
     }
-    
+
     private boolean darkModeEnabled = false;
-    
-    public boolean isDarkModeEnabled(){
+
+    public boolean isDarkModeEnabled() {
         return darkModeEnabled;
     }
-    
+
     public ListaContactos getList() {
         return list;
     }
